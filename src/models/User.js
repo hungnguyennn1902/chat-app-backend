@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
         required:true,
         unique:true,
         trim:true,
-        lowercase:true
+        lowercase:true,
+        index:true
     },
     hashedPassword:{
         type:String,
@@ -18,7 +19,8 @@ const userSchema = new mongoose.Schema({
         required:true,
         unique:true,
         trim:true,
-        lowercase:true
+        lowercase:true,
+        index:true
     },
     displayName:{
         type:String,
