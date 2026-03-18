@@ -4,7 +4,6 @@ import AccessController from '../../controllers/access.controller.js'
 import asyncHandler from '../../helpers/asyncHandler.js'
 const router = express.Router()
 
-router.post('/auth/signup', asyncHandler(AccessController.signUp))
-router.post('/auth/signin', asyncHandler(AccessController.signIn))
+rot
 
 export default router

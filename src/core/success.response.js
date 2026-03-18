@@ -2,13 +2,15 @@
 const StatusCode = {
     OK: 200,
     CREATED: 201,
+    NO_CONTENT: 204
 }
 const ReasonStatusCode = {
     OK: 'OK',
-    CREATED: 'Created!'
+    CREATED: 'Created!',
+    NO_CONTENT: 'No Content'
 }
 class SuccessResponse {
-    constructor({message, status=StatusCode.OK, reasonStatusCode=ReasonStatusCode.OK, data = {}}) {
+    constructor({ message, status = StatusCode.OK, reasonStatusCode = ReasonStatusCode.OK, data = {} }) {
         this.message = message || reasonStatusCode
         this.status = status
         this.data = data
@@ -18,14 +20,18 @@ class SuccessResponse {
     }
 }
 class OK extends SuccessResponse {
-    constructor({message, data, options={}}) {
-        super({message, data})
-        this.options = options
+    constructor({ message, data }) {
+        super({ message, data })
     }
 }
 class Created extends SuccessResponse {
-    constructor({message, data}) {
-        super({message, status: StatusCode.CREATED, reasonStatusCode: ReasonStatusCode.CREATED, data})
+    constructor({ message, data }) {
+        super({ message, status: StatusCode.CREATED, reasonStatusCode: ReasonStatusCode.CREATED, data })
     }
 }
-export { OK, Created, SuccessResponse }
+class NoContent extends SuccessResponse {
+    constructor({ message, data }) {
+        super({ message, status: StatusCode.NO_CONTENT, reasonStatusCode: ReasonStatusCode.NO_CONTENT, data })
+    }
+}
+export { OK, Created, NoContent, SuccessResponse }

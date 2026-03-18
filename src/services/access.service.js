@@ -38,7 +38,11 @@ class AccessService {
             email: user.email,
         }
     }
-    static async signIn({username, password}) {
+    static async signIn(req, res) {
+
+        const {username, password} = req.body
+
+        // Validate input
         if(!username || !password) {
             throw new BadRequestError('Missing username or password')
         }
@@ -86,6 +90,19 @@ class AccessService {
             email: user.email,
             accessToken
         }
+    }
+
+    static async signOut (req, res) {
+        // Get refresh token from cookie
+        const refreshToken = req.cookies?.refreshToken
+
+        // Delete session from DB
+        await Session.deleteOne({refreshToken})
+
+        // Clear cookie
+        res.clearCookie('refreshToken')
+        
+        return;
     }
 }
 export default AccessService
