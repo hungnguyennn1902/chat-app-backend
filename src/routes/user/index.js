@@ -1,9 +1,9 @@
 'use strict'
 import express from 'express'
-import AccessController from '../../controllers/access.controller.js'
 import asyncHandler from '../../helpers/asyncHandler.js'
+import UserController from '../../controllers/user.controller.js'
 const router = express.Router()
 
-rot
+router.get('/me', asyncHandler(UserController.getProfile))
 
 export default router
