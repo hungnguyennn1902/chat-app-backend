@@ -6,5 +6,6 @@ const router = express.Router()
 
 router.post('/signup', asyncHandler(AccessController.signUp))
 router.post('/signin', asyncHandler(AccessController.signIn))
+router.post('/signout', asyncHandler(AccessController.signOut))
 
 export default router
