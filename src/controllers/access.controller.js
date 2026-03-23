@@ -23,6 +23,13 @@ class AccessController {
         }).send(res)
     }
 
+    static async refreshToken(req, res, next) {
+        new OK({
+            message: 'Access token refreshed successfully',
+            data: await AccessService.refreshToken(req, res)
+        }).send(res)
+    }
+
 }
 
 export default AccessController

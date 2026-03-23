@@ -5,13 +5,16 @@ import morgan from 'morgan'
 import router from './routes/index.js'
 const app = express()
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
 //init middlewares
+app.use(cookieParser())
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(helmet())
 app.use(compression())
 app.use(cors({origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true}))
+
 
 //init db
 import './dbs/mongodb.js'

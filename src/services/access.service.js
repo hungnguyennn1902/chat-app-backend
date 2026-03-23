@@ -5,7 +5,7 @@ import User from '../models/User.js'
 import jwt from 'jsonwebtoken'
 import Session from '../models/Session.js'
 import crypto from 'crypto'
-const accessTokenTTL = '30m'
+const accessTokenTTL = '15s' 
 const refreshTokenTTL = 14*24*60*60*1000 // 14 days in milliseconds
 class AccessService {
     static async signUp({username, password, email, firstName, lastName}) {
@@ -95,7 +95,7 @@ class AccessService {
     static async signOut (req, res) {
         // Get refresh token from cookie
         const refreshToken = req.cookies?.refreshToken
-
+        
         // Delete session from DB
         await Session.deleteOne({refreshToken})
 
@@ -103,6 +103,32 @@ class AccessService {
         res.clearCookie('refreshToken')
         
         return;
+    }
+
+    static async refreshToken(req, res) {
+        // Get refresh token from cookie
+        const refreshToken = req.cookies?.refreshToken
+        if(!refreshToken) {
+            throw new UnauthorizedError('No refresh token provided')
+        }
+
+        // Find session in DB
+        const session = await Session.findOne({refreshToken}).lean()
+        if(!session) {
+            throw new UnauthorizedError('Invalid refresh token')
+        }
+        if(new Date() > session.expiresAt) {
+            throw new UnauthorizedError('Refresh token expired')
+        }
+
+        // Create new access token
+        const accessToken = jwt.sign(
+            {id: session.userId},
+            process.env.ACCESS_TOKEN_SECRET,
+            {expiresIn: accessTokenTTL}
+        )
+        return { accessToken }
+
     }
 }
 export default AccessService
