@@ -5,7 +5,7 @@ import User from '../models/User.js'
 import jwt from 'jsonwebtoken'
 import Session from '../models/Session.js'
 import crypto from 'crypto'
-const accessTokenTTL = '15s' 
+const accessTokenTTL = '30m' 
 const refreshTokenTTL = 14*24*60*60*1000 // 14 days in milliseconds
 class AccessService {
     static async signUp({username, password, email, firstName, lastName}) {

@@ -10,11 +10,11 @@ const protectedRoute = (req, res, next) => {
     }
 
     // Verify access token and extract user info
-    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, (err, decodedUser) => {
+    jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET, async (err, decodedUser) => {
         if(err) {
             throw new UnauthorizedError('Invalid access token')
         }
-        const user = User.findById(decodedUser.id).select(
+        const user = await User.findById(decodedUser.id).select(
             {
                 hashedPassword: 0,
                 _v: 0,
