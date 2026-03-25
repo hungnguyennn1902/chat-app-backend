@@ -38,11 +38,28 @@ class MessageService {
 
         await conversation.save()
 
-        return {message}
+        return message
 
     }
     static async sendGroupMessage(req, res) {
+        const { conversationId, content } = req.body
+        const senderId = req.user._id
+        const conversation = await Conversation.findById(conversationId)
+        if (!conversation) {
+            throw new BadRequestError('Conversation not found')
+        }
+        if(!content){
+            throw new BadRequestError('Message content cannot be empty')
+        }
+        const message = await Message.create({
+            conversationId,
+            content,
+            senderId
+        })
 
+        updateConversationAfterMessageSent(conversation, message, senderId)
+        await conversation.save()
+        return message
     }
 }
 export default MessageService

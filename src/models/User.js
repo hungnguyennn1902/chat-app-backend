@@ -29,9 +29,11 @@ const userSchema = new mongoose.Schema({
     },
     avatarUrl:{
         type:String, // CDN Link
+        default:null
     },
     avatarId:{
         type:String, // Cloudinary public_id
+        default:null
     },
     bio: {
         type: String,

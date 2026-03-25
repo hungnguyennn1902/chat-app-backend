@@ -58,6 +58,7 @@ const conversationSchema = new mongoose.Schema({
     },
     lastMessageAt: {
         type: Date,
+        default: Date.now
     },
     seenBy: [{
         type: mongoose.Schema.Types.ObjectId,
