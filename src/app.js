@@ -3,9 +3,9 @@ import express from 'express'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import router from './routes/index.js'
-const app = express()
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import { app } from './socket/index.js'
 
 //init middlewares
 app.use(cookieParser())
