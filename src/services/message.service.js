@@ -2,6 +2,8 @@ import { BadRequestError } from "../core/error.response.js"
 import Conversation from "../models/Conversation.js"
 import Message from "../models/Message.js"
 import { updateConversationAfterMessageSent } from "../helpers/messageHelper.js"
+import { emitNewMessage } from "../helpers/messageHelper.js"
+import { io } from "../socket/index.js"
 class MessageService {
     static async sendDirectMessage(req, res) {
         const { recipientId, content, conversationId } = req.body
@@ -25,7 +27,7 @@ class MessageService {
                     { userId: recipientId, joinedAt: new Date() }
                 ],
                 lastMessageAt: new Date(),
-                unreadCounts: new Map()
+                unreadCount: new Map()
             })
         }
 
@@ -38,6 +40,8 @@ class MessageService {
 
         await conversation.save()
 
+        emitNewMessage(io, conversation, message)
+
         return message
 
     }
@@ -48,7 +52,7 @@ class MessageService {
         if (!conversation) {
             throw new BadRequestError('Conversation not found')
         }
-        if(!content){
+        if (!content) {
             throw new BadRequestError('Message content cannot be empty')
         }
         const message = await Message.create({
@@ -59,6 +63,7 @@ class MessageService {
 
         updateConversationAfterMessageSent(conversation, message, senderId)
         await conversation.save()
+        emitNewMessage(io, conversation, message)
         return message
     }
 }

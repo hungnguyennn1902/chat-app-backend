@@ -118,5 +118,17 @@ class ConversationService {
         }
 
     }
+
+    static async getUserConversationsForSocketIO(userId) {
+        try{
+            const conversations = await Conversation.find(
+                {"participants.userId": userId},
+                {_id: 1}
+            )
+            return conversations.map(c => c._id.toString())
+        }catch(error) {
+            console.error('Error fetching user conversations for Socket.IO:', error)
+        }
+    }
 }
 export default ConversationService

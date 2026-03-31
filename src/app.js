@@ -5,7 +5,7 @@ import morgan from 'morgan'
 import router from './routes/index.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import { app } from './socket/index.js'
+const app = express()
 
 //init middlewares
 app.use(cookieParser())
