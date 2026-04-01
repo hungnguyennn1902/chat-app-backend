@@ -7,5 +7,6 @@ const router = express.Router()
 router.get('/', asyncHandler(ConversationController.getConversations))
 router.post('/', asyncHandler(ConversationController.createConversation))
 router.get('/:conversationId/messages', asyncHandler(ConversationController.getMessages))
+router.patch('/:conversationId/seen', asyncHandler(ConversationController.markAsSeen))
 
 export default router

@@ -1,4 +1,4 @@
-import { BadRequestError } from '../core/error.response.js'
+import { BadRequestError, NotFoundError } from '../core/error.response.js'
 import Conversation from '../models/Conversation.js'
 import Message from '../models/Message.js'
 class ConversationService {
@@ -128,6 +128,48 @@ class ConversationService {
             return conversations.map(c => c._id.toString())
         }catch(error) {
             console.error('Error fetching user conversations for Socket.IO:', error)
+        }
+    }
+
+    static async markAsSeen(req, res) {
+        const { conversationId } = req.params
+        const userId = req.user._id
+        const conversation = await Conversation.findById(conversationId).lean()
+        if (!conversation) {
+            throw new NotFoundError('Conversation not found')
+        }
+        const last = conversation.lastMessage
+        if(!last){
+            return; // No messages in the conversation yet
+        }
+        if(last.senderId.toString() === userId.toString()){
+            return; // No need to mark as seen if the user is the sender of the last message
+        }
+
+        const updated = await Conversation.findByIdAndUpdate(
+            conversationId,
+            {
+                $addToSet: { seenBy: userId },
+                $set: { [`unreadCount.${userId}`]: 0 }
+            },
+            { new: true }
+        )
+
+        io.to(conversationId).emit('read-message', {
+            conversation: updated,
+            lastMessage:{
+                _id: updated?.lastMessage?._id,
+                content: updated?.lastMessage?.content,
+                createdAt: updated?.lastMessage?.createdAt,
+                sender:{
+                    _id: updated?.lastMessage?.senderId
+                }
+            }
+        })
+
+        return {
+            seenBy: updated?.seenBy || [],
+            myUnreadCount: updated?.unreadCount[userId] || 0
         }
     }
 }

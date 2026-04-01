@@ -25,5 +25,12 @@ class ConversationController{
             data: await ConversationService.getMessages(req, res)
         }).send(res)
     }
+
+    static async markAsSeen(req, res) {
+        new OK({
+            message: 'Conversation marked as seen',
+            data: await ConversationService.markAsSeen(req, res)
+        }).send(res)
+    }
 }
 export default ConversationController
