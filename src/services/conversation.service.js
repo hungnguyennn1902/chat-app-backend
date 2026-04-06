@@ -1,6 +1,7 @@
 import { BadRequestError, NotFoundError } from '../core/error.response.js'
 import Conversation from '../models/Conversation.js'
 import Message from '../models/Message.js'
+import { io } from '../socket/index.js'
 class ConversationService {
     static async createConversation(req, res) {
         const { type, name, memberIds } = req.body
@@ -152,7 +153,7 @@ class ConversationService {
                 $addToSet: { seenBy: userId },
                 $set: { [`unreadCount.${userId}`]: 0 }
             },
-            { new: true }
+            { returnDocument: 'after' }
         )
 
         io.to(conversationId).emit('read-message', {
